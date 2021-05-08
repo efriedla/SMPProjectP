@@ -24,4 +24,11 @@ public class Student {
     String sPass;
     List<Course> sCourses;
 
+	public Object getStudentPassword() {
+		return null;
+	}
+
+	public String getStudentEmail() {
+		return null;
+	}
 }

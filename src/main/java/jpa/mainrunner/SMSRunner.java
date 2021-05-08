@@ -12,13 +12,14 @@ import java.util.Scanner;
 
 import jpa.entitymodels.Course;
 import jpa.entitymodels.Student;
+import jpa.entitymodels.StudentCourses;
 import jpa.service.CourseService;
 import jpa.service.StudentCourseService;
 import jpa.service.StudentService;
 
 /**1
  * 
- * @author Harry
+ * @author Liz
  *
  */
 public class SMSRunner {
@@ -83,11 +84,17 @@ public class SMSRunner {
 			currentStudent = students.get(0);
 		}
 
-		if (currentStudent != null & currentStudent.getStudentPassword().equals(password)) {
+		if (currentStudent != null && currentStudent.getStudentPassword().equals(password)) {
 			List<Course> courses = studentService.getStudentCourses(email);
 			out.println("MyClasses");
-			for (Course course : courses) {
-				out.println(course);
+			// creating c course and sc courseService
+			Course c = new Course();
+			CourseService cs = new CourseService();
+			out.printf("%-5s %-35s %-25s\n", "ID", "Name", "Instructor");
+			for (StudentCourses course : courses) {
+				c.setCId(course.getCourseID());
+				Course c1 = cs.getCourseById(c.getCId());
+				out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
 			}
 			retValue = true;
 		} else {
@@ -104,28 +111,35 @@ public class SMSRunner {
 		switch (sin.nextInt()) {
 		case 1:
 			List<Course> allCourses = courseService.getAllCourses();
-			List<Course> studentCourses = studentService.getStudentCourses(currentStudent.getStudentEmail());
-			allCourses.removeAll(studentCourses);
+			//List<Course> studentCourses = studentService.getStudentCourses(currentStudent.getStudentEmail());
+			//allCourses.removeAll(studentCourses);
 			out.printf("%5s%15S%15s\n", "ID", "Course", "Instructor");
 			for (Course course : allCourses) {
-				out.println(course);
+				out.printf("%-5s %-35s %-25s\n", course.getCId(), course.getCName(), course.getCInstructorName());
 			}
 			out.println();
 			out.print("Enter Course Number: ");
 			int number = sin.nextInt();
-			Course newCourse = courseService.GetCourseById(number).get(0);
+			Course newCourse = courseService.GetCourseById(number);
 
 			if (newCourse != null) {
 				studentService.registerStudentToCourse(currentStudent.getStudentEmail(), newCourse);
-				Student temp = studentService.getStudentByEmail(currentStudent.getStudentEmail()).get(0);
+				Student temp = studentService.getStudentByEmail(currentStudent.getStudentEmail());
 				
 				StudentCourseService scService = new StudentCourseService();
-				List<Course> sCourses = scService.getAllStudentCourses(temp.getStudentEmail());
+				List<StudentCourses> sCourses = scService.getAllStudentCourses(temp.getStudentEmail());
 				
 
-				out.println("MyClasses");
-				for (Course course : sCourses) {
-					out.println(course);
+				//print output
+				Course c = new Course();
+				CourseService cs = new CourseService();
+				System.out.printf("%-5s %-35s %-25s\n", "ID", "Course Name", "Instructor Name");
+				System.out.println("MyClasses");
+				for (StudentCourses course : sCourses) {
+					c.setCId(course.getCourseID());
+					Course c1 = cs.getCourseById(c.getCId());
+
+					System.out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
 				}
 			}
 			break;

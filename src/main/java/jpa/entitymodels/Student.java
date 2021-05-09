@@ -13,22 +13,26 @@ import java.util.*;
 @Log4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@NamedQueries({
+		// created named queries
+		@NamedQuery(name = "Find all students", query = "SELECT s FROM Student s"),
+		@NamedQuery(name = "Find student by email", query = "FROM Student s WHERE s.sEmail = :email")
+})
 public class Student {
 
     @Id
-    @Column(columnDefinition = "VARCHAR(50)", name = "email")@NonNull
-    String sEmail;
-    @Column(columnDefinition = "VARCHAR(50)", name = "name")@NonNull
+    // sets to varchar in database, email, name, and password, and not null
+    @Column(columnDefinition = "VARCHAR(50)", name = "name", nullable = false)
     String sName;
-    @Column(columnDefinition = "VARCHAR(50)", name = "password")@NonNull
-    String sPass;
-    List<Course> sCourses;
+    @Column(columnDefinition = "VARCHAR(50)", name = "email", nullable = false)
+    String sEmail;
+	@Column(columnDefinition = "VARCHAR(50)", name = "password", nullable = false)
+	String sPass;
 
-	public Object getStudentPassword() {
-		return null;
-	}
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) @JoinColumn(name = "student_email") @ToString.Exclude
+	List<StudentCourses> sCourses;
 
-	public String getStudentEmail() {
-		return null;
-	}
+
+
+
 }

@@ -12,16 +12,20 @@ import javax.persistence.IdClass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.*;
 
 /**
  * @author Harry
  *
  */
+@Getter
+@Setter
 @Entity
-@Table( name="courses")
+@Table( name="StudentCourses")
 @IdClass( StudentCoursesID.class)
 @NamedQueries({
-	@NamedQuery( name="CoursesByStudent", query="Select c from StudentCourses c where c.eMail = :email")
+	@NamedQuery( name="CoursesByStudent", query="Select c from StudentCourses c where c.eMail = :email"),
+		@NamedQuery( name="Find all studentcourses", query="Select c from StudentCourses c")
 })
 public class StudentCourses {
 	@Id

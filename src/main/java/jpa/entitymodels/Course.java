@@ -3,7 +3,6 @@ package jpa.entitymodels;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j;
-
 import javax.persistence.*;
 
 @Getter
@@ -21,9 +20,11 @@ import javax.persistence.*;
 public class Course {
 
     @Id
-    //assign to not null
+    @Id
+    // make id auto generate and assign it as int and not null
     @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(columnDefinition = "INT(11) UNSIGNED", name = "id", nullable = false)
     Integer cId;
+    //assign as varchar 50 char in db, as name, and not null
     @Column(columnDefinition = "VARCHAR(50)", name = "name", nullable = false)
     String cName;
     @Column(columnDefinition = "VARCHAR(50)", name = "instructor", nullable = false)

@@ -21,12 +21,14 @@ import java.util.*;
 public class Student {
 
     @Id
-    @Column(columnDefinition = "VARCHAR(50)", name = "email", nullable = false)
-    String sEmail;
+    // sets to varchar in database, email, name, and password, and not null
     @Column(columnDefinition = "VARCHAR(50)", name = "name", nullable = false)
     String sName;
-    @Column(columnDefinition = "VARCHAR(50)", name = "password", nullable = false)
-    String sPass;
+    @Column(columnDefinition = "VARCHAR(50)", name = "email", nullable = false)
+    String sEmail;
+	@Column(columnDefinition = "VARCHAR(50)", name = "password", nullable = false)
+	String sPass;
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) @JoinColumn(name = "student_email") @ToString.Exclude
 	List<StudentCourses> sCourses;
 

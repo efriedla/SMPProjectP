@@ -20,7 +20,7 @@ import javax.persistence.*;
 public class Course {
 
     @Id
-    @Id
+
     // make id auto generate and assign it as int and not null
     @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(columnDefinition = "INT(11) UNSIGNED", name = "id", nullable = false)
     Integer cId;

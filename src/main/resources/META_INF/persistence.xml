@@ -3,46 +3,35 @@
              xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
-                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
-    <persistence-unit name="SMS">
+     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <persistence-unit name="SMS" transaction-type="RESOURCE_LOCAL">
         <!-- Persistence provider -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!-- Entity classes -->
         <class>jpa.entitymodels.Student</class>
         <class>jpa.entitymodels.Course</class>
-
+        <class>jpa.entitymodels.StudentCourses</class>
+        <class>jpa.entitymodels.StudentCoursesID</class>
         <properties>
-            <!-- Configuring The Database Connection Details -->
-<!--            <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />-->
-<!--            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>-->
-<!--&lt;!&ndash;            <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/sms" />&ndash;&gt;-->
-<!--            <property name="javax.persistence.jdbc.url" value="jdbc:mysqldb://localhost:3306/sms" />-->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url"    value="jdbc:mariadb://localhost:3306/sms" />
+            <property name="javax.persistence.jdbc.user" value="root" />
+            <property name="javax.persistence.jdbc.password" value="root" />
+            <property name="javax.persistence.lock.timeout" value="100"/>
+            <property name="javax.persistence.query.timeout" value="100"/>
+            <!-- <property name="javax.persistence.schema-generation.database.action" value="update" /> -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="false"/>
+            <property name="hibernate.generate_statistics" value="false" />
+            <property name="current_session_context_class" value="thread"/>
 
-<!--            <property name="javax.persistence.jdbc.user" value="root" />-->
-<!--            <property name="javax.persistence.jdbc.password" value="root" />-->
-<!--&lt;!&ndash;            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect"/>&ndash;&gt;-->
-<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDB103Dialect" />-->
-<!--            <property name="hibernate.hbm2ddl.auto" value="create" />-->
-<!--            <property name="hibernate.show_sql" value="false"/>-->
-<!--            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>-->
-<!--            <property name="hibernate.format_sql" value="true"/>-->
-<!--            <property name="hibernate.use_sql_comments" value="true"/>-->
-<!--            <property name="hibernate.generate_statistics" value="true" />-->
-
-<!--            test-->
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/sms"/>
-            <property name="hibernate.connection.autocommit" value="false"/>
-            <property name="hibernate.connection.username" value="root"/>
-            <property name="hibernate.connection.password" value="Moo123456789"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
-            <property name="hibernate.connection.CharSet" value="utf8"/>
-            <property name="hibernate.connection.characterEncoding" value="utf8"/>
-            <property name="hibernate.connection.useUnicode" value="true"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
 
     </persistence-unit>
-
 </persistence>

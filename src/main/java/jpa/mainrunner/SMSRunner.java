@@ -105,7 +105,7 @@ public class SMSRunner {
 		out.print("Enter your email address: ");
 		String email = sin.next();
 		out.print("Enter your password: ");
-		String password = sin.next();
+		String password = sin.next().trim();
 
 		Student students = studentService.getStudentByEmail(email);
 		if (students != null) {

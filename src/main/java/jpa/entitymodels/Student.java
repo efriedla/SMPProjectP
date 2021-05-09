@@ -30,11 +30,7 @@ public class Student {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) @JoinColumn(name = "student_email") @ToString.Exclude
 	List<StudentCourses> sCourses;
 
-//	public Object getStudentPassword() {
-//		return null;
-//	}
-//
-//	public String getStudentEmail() {
-//		return null;
-//	}
+
+
+
 }

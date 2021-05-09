@@ -9,7 +9,6 @@ import lombok.extern.log4j.Log4j;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 @Log4j
@@ -188,7 +187,12 @@ public class StudentService implements StudentDAO {
 		StudentCourses sc = new StudentCourses();
 		sc.seteMail(email);
 		sc.setCourseID(id);
-		CourseService cs = new CourseService();
+		CourseService cs = new CourseService() {
+			@Override
+			public Course GetCourseById(int number) {
+				return null;
+			}
+		};
 		// set course to current course the student wishes to remove
 		Course c = cs.getCourseById(sc.getCourseID());
 		// sets cName to name of course

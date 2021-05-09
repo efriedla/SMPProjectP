@@ -58,4 +58,9 @@ public class CourseService implements CourseDAO {
 		// returns student
 		return c;
 	}
+
+	@Override
+	public Course GetCourseById(int number) {
+		return null;
+	}
 }

@@ -1,16 +1,18 @@
+
 /*
  * Filename: SMSRunner.java
-* Author: Stefanski
-* 02/25/2020 
+ * Author: Liz
+ * 05/6/2020
  */
+
 package jpa.mainrunner;
 
 import static java.lang.System.out;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import java.util.InputMismatchException;
 import jpa.entitymodels.Course;
 import jpa.entitymodels.Student;
 import jpa.entitymodels.StudentCourses;
@@ -18,16 +20,18 @@ import jpa.service.CourseService;
 import jpa.service.StudentCourseService;
 import jpa.service.StudentService;
 import jpa.util.SMSUtil;
+
 import javax.persistence.EntityManagerFactory;
 
 /**1
- * 
- * @author Liz
+ *
+ * @author Harry
  *
  */
 public class SMSRunner {
 
 	public static EntityManagerFactory emf = SMSUtil.getEntityManagerFactory();
+
 
 	private Scanner sin;
 	private StringBuilder sb;
@@ -41,7 +45,6 @@ public class SMSRunner {
 		sb = new StringBuilder();
 		courseService = new CourseService();
 		studentService = new StudentService();
-
 	}
 
 	/**
@@ -54,28 +57,47 @@ public class SMSRunner {
 	}
 
 	private void run() {
-		// Login or quit
-		switch (menu1()) {
-		case 1:
-			if (studentLogin()) {
-				registerMenu();
+		int run = 99;
+		while (run != 0) {
+			// Login or quit
+			switch (menu1()) {
+				case 1:
+					if (studentLogin()) {
+						registerMenu();
+					}
+					break;
+				case 2:
+					studentService.addStudent();
+					break;
+				case 3:
+					System.out.println("Goodbye!");
+					run = 0;
+					break;
+
+				default:
+
+					break;
+
 			}
-			break;
-		case 2:
-			out.println("Goodbye!");
-			break;
-
-		default:
-
 		}
 	}
 
-	private int menu1() {
-		sb.append("\n1.Student Login\n2. Quit Application\nPlease Enter Selection: ");
-		out.print(sb.toString());
-		sb.delete(0, sb.length());
 
-		return sin.nextInt();
+	private int menu1() {
+		System.out.println("\nPlease select an option ");
+		System.out.println("________________________________");
+		sb.append("\n1. Student Login\n2. Register as a new Student\n3. Quit Application\nPlease Enter Selection: ");
+		System.out.print(sb.toString());
+		sb.delete(0, sb.length());
+		try {
+			return sin.nextInt();
+		} catch (InputMismatchException e) {
+			System.out.println("Input error. Please choose a number from the menu to continue.");
+			sin.nextLine();
+			run();
+
+		}
+		return 0;
 	}
 
 	private boolean studentLogin() {
@@ -85,73 +107,110 @@ public class SMSRunner {
 		out.print("Enter your password: ");
 		String password = sin.next();
 
-		List<Student> students = studentService.getStudentByEmail(email);
+		Student students = studentService.getStudentByEmail(email);
 		if (students != null) {
-			currentStudent = students.get(0);
+			currentStudent = students;
 		}
 
-		if (currentStudent != null && currentStudent.getStudentPassword().equals(password)) {
-			List<Course> courses = studentService.getStudentCourses(email);
-			out.println("MyClasses");
-			// creating c course and sc courseService
+		if (currentStudent != null && currentStudent.getSPass().equals(password)) {
+			List<StudentCourses> courses = studentService.getStudentCourses(email);
+			System.out.println("\nMyClasses");
+			System.out.println("___________________________________________________________");
 			Course c = new Course();
 			CourseService cs = new CourseService();
-			out.printf("%-5s %-35s %-25s\n", "ID", "Name", "Instructor");
+			System.out.printf("%-5s %-35s %-25s\n", "ID", "Course Name", "Instructor Name");
 			for (StudentCourses course : courses) {
 				c.setCId(course.getCourseID());
 				Course c1 = cs.getCourseById(c.getCId());
-				out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
+
+				System.out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
+
 			}
 			retValue = true;
 		} else {
-			out.println("User Validation failed. GoodBye!");
+			System.out.println("User Validation failed. GoodBye!");
 		}
 		return retValue;
 	}
 
 	private void registerMenu() {
-		sb.append("\n1.Register a class\n2. Logout\nPlease Enter Selection: ");
-		out.print(sb.toString());
-		sb.delete(0, sb.length());
+		boolean b = true;
+		while (studentService.loggedIn(b)) {
+			sb.append("\n1. Register a class\n2. Withdraw from class\n3. Logout\nPlease Enter Selection: ");
+			System.out.print(sb.toString());
+			sb.delete(0, sb.length());
+			try {
+				switch (sin.nextInt()) {
+					case 1:
+						List<Course> allCourses = courseService.getAllCourses();
 
-		switch (sin.nextInt()) {
-		case 1:
-			List<Course> allCourses = courseService.getAllCourses();
-			//List<Course> studentCourses = studentService.getStudentCourses(currentStudent.getStudentEmail());
-			//allCourses.removeAll(studentCourses);
-			out.printf("%5s%15S%15s\n", "ID", "Course", "Instructor");
-			for (Course course : allCourses) {
-				out.printf("%-5s %-35s %-25s\n", course.getCId(), course.getCName(), course.getCInstructorName());
-			}
-			out.println();
-			out.print("Enter Course Number: ");
-			int number = sin.nextInt();
-			Course newCourse = courseService.GetCourseById(number);
+						System.out.printf("%-5s %-35s %-25s\n", "ID", "Course", "Instructor");
+						for (Course course : allCourses) {
+							System.out.printf("%-5s %-35s %-25s\n", course.getCId(), course.getCName(), course.getCInstructorName());
 
-			if (newCourse != null) {
-				studentService.registerStudentToCourse(currentStudent.getStudentEmail(), newCourse);
-				Student temp = studentService.getStudentByEmail(currentStudent.getStudentEmail());
-				
-				StudentCourseService scService = new StudentCourseService();
-				List<StudentCourses> sCourses = scService.getAllStudentCourses(temp.getStudentEmail());
-				
+						}
 
-				//print output
-				Course c = new Course();
-				CourseService cs = new CourseService();
-				System.out.printf("%-5s %-35s %-25s\n", "ID", "Course Name", "Instructor Name");
-				System.out.println("MyClasses");
-				for (StudentCourses course : sCourses) {
-					c.setCId(course.getCourseID());
-					Course c1 = cs.getCourseById(c.getCId());
+						System.out.println("\nEnter Course Number: ");
+						int number = sin.nextInt();
+						Course newCourse = courseService.getCourseById(number);
 
-					System.out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
+						if (newCourse != null) {
+							studentService.registerStudentToCourse(currentStudent.getSEmail(), newCourse.getCId());
+							Student temp = studentService.getStudentByEmail(currentStudent.getSEmail());
+
+							StudentCourseService scService = new StudentCourseService();
+							List<StudentCourses> sCourses = scService.getAllStudentCourses(temp.getSEmail());
+
+							Course c = new Course();
+							CourseService cs = new CourseService();
+							System.out.println("MyClasses");
+							System.out.printf("%-5s %-35s %-25s\n", "ID", "Course Name", "Instructor Name");
+							for (StudentCourses course : sCourses) {
+								c.setCId(course.getCourseID());
+								Course c1 = cs.getCourseById(c.getCId());
+
+								System.out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
+							}
+						}
+
+
+						break;
+
+					case 2:
+
+						StudentCourseService scService = new StudentCourseService();
+						List<StudentCourses> sCourses = scService.getAllStudentCourses(currentStudent.getSEmail());
+
+						Course c = new Course();
+						CourseService cs = new CourseService();
+						System.out.println("\nMyClasses");
+						System.out.printf("%-5s %-35s %-25s\n", "ID", "Course Name", "Instructor Name");
+						for (StudentCourses course : sCourses) {
+							c.setCId(course.getCourseID());
+							Course c1 = cs.getCourseById(c.getCId());
+
+							System.out.printf("%-5s %-35s %-25s\n", c1.getCId(), c1.getCName(), c1.getCInstructorName());
+						}
+						System.out.println("\nEnter Course Number to remove: ");
+						int number2 = sin.nextInt();
+						Course newCourse2 = courseService.getCourseById(number2);
+						studentService.removeStudentFromCourse(currentStudent.getSEmail(), newCourse2.getCId());
+						break;
+
+					case 3:
+						b = false;
+						break;
+
+
+					default:
 				}
+			} catch (InputMismatchException e) {
+				System.out.println("Input error. Please choose a number from the menu to continue.");
+				sin.nextLine();
+				registerMenu();
+
 			}
-			break;
-		case 2:
-		default:
-			out.println("Goodbye!");
 		}
 	}
 }
+
